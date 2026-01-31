@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Game Kita 💕</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+      border-radius: 25px;
+      border: none;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.95);
+    }
+
+    h1 {
+      color: #c2185b;
+    }
+
+    .option {
+      border: 2px solid #ffd1e8;
+      border-radius: 20px;
+      padding: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option:hover {
+      background: #fff0f6;
+    }
+
+    .option.active {
+      background: #ff7ac2;
+      color: white;
+      border-color: #ff7ac2;
+    }
+
+    .btn-love {
+      background: linear-gradient(90deg, #ff5fa3, #ff7ac2);
+      border: none;
+      color: white;
+      border-radius: 25px;
+      padding: 10px 25px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: #ffd1e8;
+      color: #c2185b;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <a href="index.html" class="back-btn">← Kembali</a>
+
+      <div class="card p-4 text-center">
+
+        <h1 class="fw-bold mb-3">🎮 Mini Game Pasangan</h1>
+        <p class="text-muted mb-4">Jawab jujur ya… nggak boleh mikir lama-lama 😆💗</p>
+
+        <h5 id="question"></h5>
+
+        <div id="options" class="mt-4"></div>
+
+        <button id="nextBtn" class="btn-love mt-4 d-none">Lanjut ➜</button>
+
+        <div id="result" class="mt-4 fw-bold fs-5 text-danger"></div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "Kalau dia lagi capek, kamu bakal?",
+      a: ["Ngilang 😭", "Nanya tapi biasa aja", "Dengerin & nemenin 🤍"]
+    },
+    {
+      q: "Menurut kamu, dia itu?",
+      a: ["Biasa aja", "Cukup spesial", "Rumah paling nyaman 💕"]
+    },
+    {
+      q: "Kalau lagi berantem?",
+      a: ["Ngambek lama", "Nunggu dia dulu", "Ngobrol baik-baik"]
+    },
+    {
+      q: "Kamu paling takut?",
+      a: ["Kehilangan dia", "Ditinggal pas sayang", "Nggak bisa bahagiain dia"]
+    },
+    {
+      q: "Kalau dia ngilang sebentar?",
+      a: ["Overthinking 😵", "Sabar nunggu", "Percaya aja"]
+    },
+    {
+      q: "Buat kamu, dia itu?",
+      a: ["Pacar", "Teman hidup", "Segalanya"]
+    },
+    {
+      q: "Kalau lagi kangen?",
+      a: ["Dipendem", "Chat dikit", "Jujur bilang"]
+    },
+    {
+      q: "Kamu tipe?",
+      a: ["Cuek", "Perhatian", "Overlove 😭💗"]
+    },
+    {
+      q: "Kalau dia sedih?",
+      a: ["Bingung", "Coba nenangin", "Ikut ngerasain"]
+    },
+    {
+      q: "Satu kata buat dia?",
+      a: ["Berharga", "Istimewa", "Cinta"]
+    }
+  ];
+
+  let index = 0;
+  let score = 0;
+
+  const questionEl = document.getElementById("question");
+  const optionsEl = document.getElementById("options");
+  const nextBtn = document.getElementById("nextBtn");
+  const resultEl = document.getElementById("result");
+
+  function loadQuestion() {
+    nextBtn.classList.add("d-none");
+    optionsEl.innerHTML = "";
+    questionEl.textContent = questions[index].q;
+
+    questions[index].a.forEach((opt, i) => {
+      const div = document.createElement("div");
+      div.className = "option";
+      div.textContent = opt;
+      div.onclick = () => selectOption(div, i);
+      optionsEl.appendChild(div);
+    });
+  }
+
+  function selectOption(el, i) {
+    document.querySelectorAll(".option").forEach(o => o.classList.remove("active"));
+    el.classList.add("active");
+    score += i;
+    nextBtn.classList.remove("d-none");
+  }
+
+  nextBtn.onclick = () => {
+    index++;
+    if (index < questions.length) {
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  };
+
+  function showResult() {
+    questionEl.textContent = "💖 Hasil Kamu";
+    optionsEl.innerHTML = "";
+    nextBtn.classList.add("d-none");
+
+    let text = "";
+    if (score <= 10) text = "Kamu tipe pendiam tapi tulus 🤍";
+    else if (score <= 18) text = "Kamu perhatian dan hangat 💕";
+    else text = "Kamu bucin sejati 😭💗";
+
+    resultEl.textContent = text;
+  }
+
+  loadQuestion();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

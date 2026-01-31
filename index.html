@@ -28,7 +28,6 @@
       box-shadow: 0 15px 40px rgba(0,0,0,0.15);
     }
 
-    /* HEART */
     .heart {
       position: relative;
       width: 60px;
@@ -57,7 +56,6 @@
       50% { transform: rotate(-45deg) scale(1.3); }
     }
 
-    /* FLOATING LOVE */
     .love-container span {
       position: fixed;
       bottom: -10px;
@@ -72,43 +70,12 @@
       100% { transform: translateY(-110vh); opacity: 0; }
     }
 
-    /* BUTTON */
     .btn-love {
       background: linear-gradient(90deg, #ff5fa3, #ff7ac2);
       color: white;
       border: none;
       border-radius: 30px;
       padding: 10px 25px;
-    }
-
-    /* GALLERY */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .gallery img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.05);
-    }
-
-    .upload-box {
-      border: 2px dashed #ff7ac2;
-      border-radius: 20px;
-      padding: 25px;
-      cursor: pointer;
-      color: #ff4d88;
-      font-weight: 500;
     }
 
     footer {
@@ -128,8 +95,7 @@
 
       <div class="text-center mb-3">
         <h6 class="text-muted">
-          Dari <strong>Alliv Atra Wibawa</strong>  
-          <br/>
+          Dari <strong>Alliv Atra Wibawa</strong><br/>
           untuk kamu, <strong>Ane Lestiani</strong> 💕
         </h6>
       </div>
@@ -159,16 +125,15 @@
 
         <hr class="my-4"/>
 
-        <!-- GALLERY -->
-        <h4 class="fw-bold">📸 Galeri Kenangan Kita</h4>
-        <p class="text-muted">Nanti kita isi foto-foto manis kita ya 💕</p>
+        <!-- MENU -->
+        <h4 class="fw-bold">💗 Ruang Kita</h4>
+        <p class="text-muted">Tempat semua cerita dan kenangan kita</p>
 
-        <label class="upload-box w-100 text-center">
-          ➕ Upload Foto
-          <input type="file" id="imageUpload" accept="image/*" hidden multiple>
-        </label>
-
-        <div class="gallery" id="gallery"></div>
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+          <a href="gallery.html" class="btn btn-outline-danger rounded-pill">📸 Galeri</a>
+          <a href="catatan.html" class="btn btn-outline-danger rounded-pill">💌 Catatan</a>
+          <a href="minigame.html" class="btn btn-outline-danger rounded-pill">🎮 Mini Game</a>
+        </div>
 
         <footer class="mt-4">
           Dibuat dengan cinta, pelan-pelan, tapi serius 🤍
@@ -180,7 +145,6 @@
 </div>
 
 <script>
-  /* FLOATING HEART */
   const loveContainer = document.getElementById('loveContainer');
   function spawnLove() {
     const span = document.createElement('span');
@@ -193,36 +157,71 @@
   }
   setInterval(spawnLove, 150);
 
-  /* BUTTON ACTION */
   document.getElementById('semangatBtn').onclick = () => {
     document.getElementById('messageArea').textContent =
       'Semangat ya sayang 🤍 aku selalu ada buat kamu.';
-    for(let i=0;i<15;i++) spawnLove();
   };
 
   document.getElementById('pelukBtn').onclick = () => {
     document.getElementById('messageArea').textContent =
       'Peluk jauh tapi hangat 🤗💖';
-    for(let i=0;i<25;i++) spawnLove();
+  };
+</script>
+<script type="module">
+  // Firebase core
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+
+  // Firestore (database)
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // Storage (buat foto)
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    deleteObject
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+
+  // Config kamu (AMAN)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBNs26AX1PuSK-JfhtekLM-aIBE0KHV70w",
+    authDomain: "foto-kenangan-476c1.firebaseapp.com",
+    projectId: "foto-kenangan-476c1",
+    storageBucket: "foto-kenangan-476c1.firebasestorage.app",
+    messagingSenderId: "637045965870",
+    appId: "1:637045965870:web:9674a2b0656940c5a7cbbf"
   };
 
-  /* GALLERY UPLOAD */
-  const imageUpload = document.getElementById('imageUpload');
-  const gallery = document.getElementById('gallery');
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-  imageUpload.addEventListener('change', function() {
-    [...this.files].forEach(file => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        gallery.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
-  });
+  // biar bisa dipake global
+  window.db = db;
+  window.storage = storage;
+  window.firebaseUtils = {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    updateDoc,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    deleteObject
+  };
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
