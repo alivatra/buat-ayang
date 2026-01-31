@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dari Alliv untuk Ane 💖</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --gradient1: #ffdde1;
+      --gradient2: #ee9ca7;
+      --accent: #ff4d88;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--gradient1), var(--gradient2));
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.95);
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    /* HEART */
+    .heart {
+      position: relative;
+      width: 60px;
+      height: 54px;
+      margin: 0 auto 20px;
+      background: var(--accent);
+      transform: rotate(-45deg);
+      animation: beat 1s infinite ease-in-out;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 54px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -30px; left: 0; }
+    .heart::after { left: 30px; top: 0; }
+
+    @keyframes beat {
+      0%,100% { transform: rotate(-45deg) scale(1); }
+      50% { transform: rotate(-45deg) scale(1.3); }
+    }
+
+    /* FLOATING LOVE */
+    .love-container span {
+      position: fixed;
+      bottom: -10px;
+      color: #ff4d88;
+      animation: floatLove 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatLove {
+      0% { transform: translateY(0); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    /* BUTTON */
+    .btn-love {
+      background: linear-gradient(90deg, #ff5fa3, #ff7ac2);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 25px;
+    }
+
+    /* GALLERY */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .upload-box {
+      border: 2px dashed #ff7ac2;
+      border-radius: 20px;
+      padding: 25px;
+      cursor: pointer;
+      color: #ff4d88;
+      font-weight: 500;
+    }
+
+    footer {
+      font-size: 0.85rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="love-container" id="loveContainer"></div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+
+      <div class="text-center mb-3">
+        <h6 class="text-muted">
+          Dari <strong>Alliv Atra Wibawa</strong>  
+          <br/>
+          untuk kamu, <strong>Ane Lestiani</strong> 💕
+        </h6>
+      </div>
+
+      <div class="card p-5 text-center">
+
+        <div class="heart"></div>
+
+        <h1 class="fw-bold mb-3">Hai Sayangku 💖</h1>
+
+        <p class="mb-4">
+          Kalau hari ini berat, nggak apa-apa.  
+          Aku di sini, selalu. Kamu itu rumah buat hatiku 🤍
+        </p>
+
+        <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+          <button id="semangatBtn" class="btn-love">Kasih Semangat ✨</button>
+          <button id="pelukBtn" class="btn btn-outline-danger rounded-pill">Peluk Virtual 🤗</button>
+          <a href="https://wa.me/6283838921901" target="_blank" class="btn btn-success rounded-pill">
+            Chat Aku 💬
+          </a>
+        </div>
+
+        <h5 id="messageArea" class="text-muted">
+          Aku bangga punya kamu 🤍
+        </h5>
+
+        <hr class="my-4"/>
+
+        <!-- GALLERY -->
+        <h4 class="fw-bold">📸 Galeri Kenangan Kita</h4>
+        <p class="text-muted">Nanti kita isi foto-foto manis kita ya 💕</p>
+
+        <label class="upload-box w-100 text-center">
+          ➕ Upload Foto
+          <input type="file" id="imageUpload" accept="image/*" hidden multiple>
+        </label>
+
+        <div class="gallery" id="gallery"></div>
+
+        <footer class="mt-4">
+          Dibuat dengan cinta, pelan-pelan, tapi serius 🤍
+        </footer>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* FLOATING HEART */
+  const loveContainer = document.getElementById('loveContainer');
+  function spawnLove() {
+    const span = document.createElement('span');
+    span.innerHTML = '❤';
+    span.style.left = Math.random() * 100 + 'vw';
+    span.style.fontSize = (0.5 + Math.random()) + 'rem';
+    span.style.animationDuration = (2 + Math.random() * 2) + 's';
+    loveContainer.appendChild(span);
+    setTimeout(() => span.remove(), 4000);
+  }
+  setInterval(spawnLove, 150);
+
+  /* BUTTON ACTION */
+  document.getElementById('semangatBtn').onclick = () => {
+    document.getElementById('messageArea').textContent =
+      'Semangat ya sayang 🤍 aku selalu ada buat kamu.';
+    for(let i=0;i<15;i++) spawnLove();
+  };
+
+  document.getElementById('pelukBtn').onclick = () => {
+    document.getElementById('messageArea').textContent =
+      'Peluk jauh tapi hangat 🤗💖';
+    for(let i=0;i<25;i++) spawnLove();
+  };
+
+  /* GALLERY UPLOAD */
+  const imageUpload = document.getElementById('imageUpload');
+  const gallery = document.getElementById('gallery');
+
+  imageUpload.addEventListener('change', function() {
+    [...this.files].forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        gallery.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
