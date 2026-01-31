@@ -5,31 +5,34 @@
   <title>Galeri Kenangan 💖</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    :root {
-      --gradient1: #ffdde1;
-      --gradient2: #ee9ca7;
-      --accent: #ff4d88;
-    }
-
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, var(--gradient1), var(--gradient2));
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       font-family: 'Poppins', sans-serif;
     }
 
     .card {
-      background: rgba(255,255,255,0.95);
       border-radius: 25px;
       box-shadow: 0 15px 40px rgba(0,0,0,0.15);
       border: none;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .btn-love {
+      background: linear-gradient(90deg, #ff5fa3, #ff7ac2);
+      color: white;
+      border-radius: 30px;
+      border: none;
+      padding: 10px 25px;
     }
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 15px;
       margin-top: 20px;
     }
@@ -40,55 +43,52 @@
       object-fit: cover;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease;
+      transition: transform .3s;
     }
 
     .gallery img:hover {
       transform: scale(1.05);
     }
-
-    .upload-box {
-      border: 2px dashed #ff7ac2;
-      border-radius: 20px;
-      padding: 25px;
-      cursor: pointer;
-      color: #ff4d88;
-      font-weight: 500;
-    }
   </style>
 </head>
 
-<body class="p-4">
+<body>
 
-<div class="container">
-  <a href="index.html" class="btn btn-outline-light mb-3">← Kembali</a>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
 
-  <div class="card p-4 text-center">
-    <h3 class="fw-bold mb-2">📸 Galeri Kenangan Kita</h3>
-    <p class="text-muted">Setiap foto adalah cerita kita 💕</p>
+      <div class="text-center mb-3">
+        <h5 class="text-muted">
+          Dari <b>Alliv Atra Wibawa</b> 💕  
+          <br>untuk <b>Ane Lestiani</b>
+        </h5>
+      </div>
 
-    <label class="upload-box w-100 mb-4">
-      ➕ Upload Foto Kenangan
-      <input type="file" id="photoInput" accept="image/*" hidden>
-    </label>
+      <div class="card p-4 text-center">
+        <h3 class="fw-bold mb-3">📸 Galeri Kenangan Kita</h3>
+        <p class="text-muted">Foto-foto manis yang bakal kita simpan selamanya 💖</p>
 
-    <div class="gallery" id="gallery"></div>
+        <input type="file" id="fileInput" accept="image/*" class="form-control mb-3">
 
-    <p class="text-muted mt-4" style="font-size:0.85rem">
-      Foto yang diupload akan tersimpan selamanya 🤍
-    </p>
+        <button class="btn-love" id="uploadBtn">Upload Foto 💕</button>
+
+        <div class="gallery" id="gallery"></div>
+
+        <a href="index.html" class="btn btn-outline-danger rounded-pill mt-4">
+          ⬅ Kembali
+        </a>
+      </div>
+
+    </div>
   </div>
 </div>
 
 <!-- FIREBASE -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import {
-    getFirestore, collection, addDoc, getDocs, query, orderBy
-  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-  import {
-    getStorage, ref, uploadBytes, getDownloadURL
-  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBNs26AX1PuSK-JfhtekLM-aIBE0KHV70w",
@@ -100,45 +100,45 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
   const storage = getStorage(app);
+  const db = getFirestore(app);
 
-  const gallery = document.getElementById("gallery");
-  const photoInput = document.getElementById("photoInput");
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const gallery = document.getElementById('gallery');
 
+  // 🔥 LOAD FOTO SAAT HALAMAN DIBUKA
   async function loadGallery() {
-    gallery.innerHTML = "";
+    gallery.innerHTML = '';
     const q = query(collection(db, "gallery"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
+    const snapshot = await getDocs(q);
 
-    snap.forEach(doc => {
-      const data = doc.data();
-      const img = document.createElement("img");
-      img.src = data.url;
+    snapshot.forEach(doc => {
+      const img = document.createElement('img');
+      img.src = doc.data().url;
       gallery.appendChild(img);
     });
   }
 
-  photoInput.addEventListener("change", async () => {
-    const file = photoInput.files[0];
-    if (!file) return;
+  loadGallery();
 
-    const path = `gallery/${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, path);
+  // ⬆️ UPLOAD FOTO
+  uploadBtn.onclick = async () => {
+    const file = fileInput.files[0];
+    if (!file) return alert("Pilih foto dulu 😅");
 
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
+    const fileRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
 
     await addDoc(collection(db, "gallery"), {
-      url,
-      createdAt: Date.now()
+      url: url,
+      createdAt: serverTimestamp()
     });
 
-    photoInput.value = "";
+    fileInput.value = "";
     loadGallery();
-  });
-
-  loadGallery();
+  };
 </script>
 
 </body>
